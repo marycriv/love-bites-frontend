@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 
-const matchStyle = {
-  border: '5px solid black'
-  };
-
 export default class Match extends Component {
   state = {
     bitten: null
@@ -11,21 +7,11 @@ export default class Match extends Component {
 
   renderCard(){
 
-    const caps = {
-      textTransform: 'capitalize'
-    }
-
-    let bittenId = this.props.biteeId
-
     return (
-      <div style={matchStyle}>
-        <h1 style={caps}>{this.props.displayName}</h1>
-        <img src={this.props.profilePicture} alt={`${this.props.displayName} profile`} />
-        <p style={caps}><strong>Classification:</strong> {this.props.classification}</p>
-        <span>
-          <img height='50px' alt='heart' src="https://emojis.wiki/emoji-pics/facebook/heart-with-arrow-facebook.png" onClick={() => this.props.handleClickInitialBite(bittenId)} />
-          <img height='50px' alt='garlic' src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/emojipedia/181/garlic_1f9c4.png" onClick={() => this.props.handleClickGarlic()} />
-        </span>
+      <div>
+        <h1>{this.props.displayName}</h1>
+        <img width='250px' src={this.props.profilePicture} alt={`${this.props.displayName} profile`} />
+        <p><strong>Classification:</strong> {this.props.classification}</p>
       </div>
     )
   }

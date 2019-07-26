@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import './App.css';
 import PotentialMatchesContainer from './containers/PotentialMatchesContainer'
 import BittenContainer from './containers/BittenContainer'
+import PendingContainer from './containers/PendingContainer'
 import GarlicContainer from './containers/GarlicContainer'
+import NavBar from "./components/NavBar";
+import Header from "./components/Header";
+
 
 const API = 'http://localhost:3001'
 
@@ -11,6 +15,7 @@ class App extends Component {
     state = {
       userData: [],
       bitesData: [],
+      currentUserId: 4,
       isLoading: true
     }
 
@@ -34,12 +39,11 @@ class App extends Component {
       })
   }
 
-// Hardcoded in Spike/u2 liking all users, but it is posting & persisting
-  handleClickInitialBite(biteeId) {
+  handleClick(biterId, biteeId, status) {
     let payload = {
-      biter_id: 2,
+      biter_id: biterId,
       bitee_id: biteeId,
-      status: "pending"
+      status: status
     }
 
     fetch(API + `/bites`, {
@@ -54,24 +58,10 @@ class App extends Component {
     .then(console.log)
   }
 
-  // handleClickGarlic(biteId){
-  //   fetch(API + `/bite/${biteId}`, {
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type': 'application/json'
-  //     },
-  //     method: 'patch',
-  //     body: JSON.stringify({
-  //       status: 3
-  //     })
-  //   })
-  //   .then(resp  => resp.json())
-  //   .then(console.log)
-  // }
-
   componentDidMount(){
 
     this.getUsers()
+    this.getBites()
     this.setState({
       isLoading: false
     })
@@ -79,27 +69,42 @@ class App extends Component {
 
 
   render(){
-    const { userData, bitesData, handleClickInitialBite, handleClickGarlic } = this.state
+    const { userData, bitesData, handleClick, currentUserId } = this.state
 
     if (this.state.isLoading) {
       return <div><h1>Loading...</h1></div>
     } else {
       return (
         <div className="App">
-          < PotentialMatchesContainer
+          <Header
             userData={ userData }
-            handleClickInitialBite={ this.handleClickInitialBite }
-            handleClickGarlic={ handleClickGarlic }
-            bitesData={ bitesData }
+            currentUserId={ currentUserId }
           />
-          < BittenContainer
-            userData={ userData }
-            bitesData={ bitesData }
-          />
-          < GarlicContainer
-            userData={ userData }
-            bitesData={ bitesData }
-          />
+          <NavBar />
+            < PotentialMatchesContainer
+              userData={ userData }
+              handleClick={ this.handleClick }
+              bitesData={ bitesData }
+              currentUserId={ currentUserId }
+            />
+            < PendingContainer
+              userData={ userData }
+              bitesData={ bitesData }
+              currentUserId={ currentUserId }
+              handleClick={ this.handleClick }
+            />
+            < BittenContainer
+              userData={ userData }
+              bitesData={ bitesData }
+              currentUserId={ currentUserId }
+              handleClick={ this.handleClick }
+            />
+            < GarlicContainer
+              userData={ userData }
+              bitesData={ bitesData }
+              currentUserId={ currentUserId }
+              handleClick={ this.handleClick }
+            />
         </div>
       );
     }

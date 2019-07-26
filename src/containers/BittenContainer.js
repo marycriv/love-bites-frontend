@@ -1,27 +1,25 @@
 import React from "react";
 import Match from "../components/Match";
 
-const boxStyle = {
-  border: '5px solid green'
-  };
-
 const BittenContainer = (props) => {
 
   return (
-    // this.props.bitesData.map((bite) => (bite.biter_id === user.id || bite.bitee_id === user.id ){
-
-      <div style={boxStyle}>
-      { props.userData.map((user) =>
+    <div className="BittenContainer">
+      {props.bitesData.map(function(bite) { return ((props.currentUserId === bite.biter_id || bite.bitee_id) && bite.status === 'bitten') ?
+      <div className="MatchCard">
         < Match
-          key={user.id}
-          biteeId={user.id}
-          displayName={user.display_name}
-          profilePicture={user.profile_picture}
-          classification={user.classification}
-        />) }
-      </div>
-
-    // }
+            key={`bitten-${bite.bitee_id}`}
+            biteeId={bite.bitee_id}
+            displayName={bite.bitee.display_name}
+            profilePicture={bite.bitee.profile_picture}
+            classification={bite.bitee.classification}
+            handleClick={ props.handleClick }
+            currentUserId={ props.currentUserId }
+          />
+        </div>
+          : null
+      })}
+    </div>
   )
 
 
