@@ -14,6 +14,7 @@ export default class PotentialMatchesContainer extends Component {
         {this.props.userData.map((user) =>
               < Match
                 key={user.id}
+                biteeId={user.id}
                 displayName={user.display_name}
                 profilePicture={user.profile_picture}
                 classification={user.classification}

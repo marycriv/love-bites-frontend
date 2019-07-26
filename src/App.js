@@ -34,35 +34,40 @@ class App extends Component {
       })
   }
 
-  handleClickInitialBite(biteId) {
-    fetch(API + `/bite/${biteId}`, {
+// Hardcoded in Spike/u2 liking all users, but it is posting & persisting
+  handleClickInitialBite(biteeId) {
+    let payload = {
+      biter_id: 2,
+      bitee_id: biteeId,
+      status: "pending"
+    }
+
+    fetch(API + `/bites`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      method: 'patch',
-      body: JSON.stringify({
-        status: 1
-      })
+      method: 'POST',
+      body: JSON.stringify(payload)
     })
     .then(resp  => resp.json())
     .then(console.log)
   }
 
-  handleClickGarlic(biteId){
-    fetch(API + `/bite/${biteId}`, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      method: 'patch',
-      body: JSON.stringify({
-        status: 3
-      })
-    })
-    .then(resp  => resp.json())
-    .then(console.log)
-  }
+  // handleClickGarlic(biteId){
+  //   fetch(API + `/bite/${biteId}`, {
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type': 'application/json'
+  //     },
+  //     method: 'patch',
+  //     body: JSON.stringify({
+  //       status: 3
+  //     })
+  //   })
+  //   .then(resp  => resp.json())
+  //   .then(console.log)
+  // }
 
   componentDidMount(){
 
@@ -83,7 +88,7 @@ class App extends Component {
         <div className="App">
           < PotentialMatchesContainer
             userData={ userData }
-            handleClickInitialBite={ handleClickInitialBite }
+            handleClickInitialBite={ this.handleClickInitialBite }
             handleClickGarlic={ handleClickGarlic }
             bitesData={ bitesData }
           />
