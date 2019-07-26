@@ -1,26 +1,104 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
 import './App.css';
+import PotentialMatchesContainer from './containers/PotentialMatchesContainer'
+import BittenContainer from './containers/BittenContainer'
+import GarlicContainer from './containers/GarlicContainer'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const API = 'http://localhost:3001'
+
+class App extends Component {
+
+    state = {
+      userData: [],
+      bitesData: [],
+      isLoading: true
+    }
+
+  getUsers() {
+      fetch(API + '/users')
+      .then(resp  => resp.json())
+      .then((userData) => {
+        this.setState({
+          userData: userData
+        })
+      })
+  }
+
+  getBites() {
+      fetch(API + '/bites')
+      .then(resp  => resp.json())
+      .then((bitesData) => {
+        this.setState({
+          bitesData: bitesData
+        })
+      })
+  }
+
+  handleClickInitialBite(biteId) {
+    fetch(API + `/bite/${biteId}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'patch',
+      body: JSON.stringify({
+        status: 1
+      })
+    })
+    .then(resp  => resp.json())
+    .then(console.log)
+  }
+
+  handleClickGarlic(biteId){
+    fetch(API + `/bite/${biteId}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'patch',
+      body: JSON.stringify({
+        status: 3
+      })
+    })
+    .then(resp  => resp.json())
+    .then(console.log)
+  }
+
+  componentDidMount(){
+
+    this.getUsers()
+    this.setState({
+      isLoading: false
+    })
+  }
+
+
+  render(){
+    const { userData, bitesData, handleClickInitialBite, handleClickGarlic } = this.state
+
+    if (this.state.isLoading) {
+      return <div><h1>Loading...</h1></div>
+    } else {
+      return (
+        <div className="App">
+          < PotentialMatchesContainer
+            userData={ userData }
+            handleClickInitialBite={ handleClickInitialBite }
+            handleClickGarlic={ handleClickGarlic }
+            bitesData={ bitesData }
+          />
+          < BittenContainer
+            userData={ userData }
+            bitesData={ bitesData }
+          />
+          < GarlicContainer
+            userData={ userData }
+            bitesData={ bitesData }
+          />
+        </div>
+      );
+    }
+  }
 }
 
 export default App;
