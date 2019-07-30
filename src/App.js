@@ -1,114 +1,155 @@
 import React, { Component } from 'react';
 import './App.css';
-import PotentialMatchesContainer from './containers/PotentialMatchesContainer'
-import BittenContainer from './containers/BittenContainer'
-import PendingContainer from './containers/PendingContainer'
-import GarlicContainer from './containers/GarlicContainer'
+import MainContainer from './containers/MainContainer'
 import NavBar from "./components/NavBar";
+import NewUserForm from "./components/NewUserForm";
 import Header from "./components/Header";
-
+import BepisMode from "./components/BepisMode";
 
 const API = 'http://localhost:3001'
 
 class App extends Component {
 
-    state = {
-      userData: [],
-      bitesData: [],
-      currentUserId: 4,
-      isLoading: true
-    }
+  state = {
+    isLoading: true,
+    userData: [],
+    bepisMode: false,
+    currentUserId: null
+  }
 
   getUsers() {
       fetch(API + '/users')
       .then(resp  => resp.json())
-      .then((userData) => {
+      .then(userData => {
         this.setState({
-          userData: userData
+          userData: userData,
+          isLoading: false
         })
       })
   }
 
-  getBites() {
-      fetch(API + '/bites')
-      .then(resp  => resp.json())
-      .then((bitesData) => {
-        this.setState({
-          bitesData: bitesData
-        })
-      })
+  componentDidMount(){
+    // console.log('state', this.state)
+
+    this.getUsers()
   }
 
-  handleClick(biterId, biteeId, status) {
-    let payload = {
-      biter_id: biterId,
-      bitee_id: biteeId,
-      status: status
+
+  bepisMode = () => {
+    this.setState({
+      bepisMode: !this.state.bepisMode
+    }, () => console.log("Bepis Mode:", this.state.bepisMode))
+
+  }
+
+  handleLoginSubmit = (event, loginId) => {
+    event.preventDefault();
+    if (loginId === 'bepis') {
+      this.bepisMode()
+    } else {
+      let id = parseInt(loginId)
+
+      this.setState({
+        currentUserId: id
+      })
+    }
+  }
+
+  handleSubmit = (e, name, picture, classification) => {
+    e.preventDefault();
+
+    let newUserSubmission = {
+      display_name: name,
+      profile_picture: picture,
+      classification: classification
     }
 
-    fetch(API + `/bites`, {
+    fetch(API + `/users`, {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(newUserSubmission)
     })
-    .then(resp  => resp.json())
-    .then(console.log)
+    .then(resp => resp.json())
+    .then((newData) => this.setState({
+      userData: [...this.state.userData, newData],
+      currentUserId: newData.id
+    }))
+    .catch(error => console.log('error'))
   }
 
-  componentDidMount(){
-
-    this.getUsers()
-    this.getBites()
-    this.setState({
-      isLoading: false
+  deleteButtonAction = () => {
+    fetch(API + `/users/${this.state.currentUserId}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'DELETE'
     })
+    .then(this.setState({
+      currentUserId: null
+    }))
   }
 
+  handleEditSubmit = (e, name, picture, classification) => {
+    e.preventDefault();
+
+    let editUserSubmission = {
+      display_name: name,
+      profile_picture: picture,
+      classification: classification
+    }
+
+    fetch(API + `/users/${this.state.currentUserId}`, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: 'PATCH',
+      body: JSON.stringify(editUserSubmission)
+    })
+    .then(resp => resp.json())
+    .then((editedUser) => {this.getUsers()})
+
+  }
 
   render(){
-    const { userData, bitesData, handleClick, currentUserId } = this.state
+
+    const { userData } = this.state
+
+    // console.log("AHHHHH", userData)
+    let currentUserId = this.state.currentUserId
 
     if (this.state.isLoading) {
       return <div><h1>Loading...</h1></div>
+    } else if (this.state.bepisMode) {
+      return (
+      <BepisMode /> )
     } else {
       return (
         <div className="App">
-          <Header
-            userData={ userData }
-            currentUserId={ currentUserId }
-          />
-          <NavBar />
-            < PotentialMatchesContainer
-              userData={ userData }
-              handleClick={ this.handleClick }
-              bitesData={ bitesData }
-              currentUserId={ currentUserId }
-            />
-            < PendingContainer
-              userData={ userData }
-              bitesData={ bitesData }
-              currentUserId={ currentUserId }
-              handleClick={ this.handleClick }
-            />
-            < BittenContainer
-              userData={ userData }
-              bitesData={ bitesData }
-              currentUserId={ currentUserId }
-              handleClick={ this.handleClick }
-            />
-            < GarlicContainer
-              userData={ userData }
-              bitesData={ bitesData }
-              currentUserId={ currentUserId }
-              handleClick={ this.handleClick }
-            />
+        <Header
+          userData={userData}
+          currentUserId={ currentUserId }
+          handleLoginSubmit={this.handleLoginSubmit}
+          deleteButtonAction={this.deleteButtonAction}
+          handleEditSubmit={this.handleEditSubmit}
+        />
+        <NavBar />
+        <NewUserForm
+          userData={ userData }
+          handleSubmit={this.handleSubmit}
+        />
+        <MainContainer
+          userData={ userData }
+          currentUserId={ currentUserId }
+        />
         </div>
       );
     }
-  }
+  } // end render
 }
 
 export default App;
