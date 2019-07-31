@@ -10,7 +10,7 @@ export default class Match extends Component {
   renderCard(){
 
     return (
-      <div id="container">
+      <div>
         <h1>{this.props.displayName}</h1>
         <img id='icon' width='250px' src={this.props.profilePicture} alt={`${this.props.displayName} profile`} />
         <p><strong>Classification:</strong> {this.props.classification}</p>

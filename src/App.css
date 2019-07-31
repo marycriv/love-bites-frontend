@@ -30,6 +30,14 @@ h1 {
   border-radius: 50px;
 }
 
+.Header h2, h3 {
+  font-family: 'Amiri', serif;
+}
+
+.LoginForm {
+  font-family: 'Amiri', serif;
+}
+
 .NavBar {
   border: 5px solid pink;
   text-align: center;
@@ -99,9 +107,46 @@ h1 {
 }
 
 .NewUserForm {
-
+  margin-left: 7vw;
 }
 
 .LoginForm {
 
+}
+
+.TopBar{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.InterestedIn {
+  flex-grow: 1;
+  flex-basis: 7rem;
+  margin-left: 3em;
+}
+
+.JumpBtns {
+  flex-grow: 1;
+  flex-basis: 7rem;
+  font-size: 20px;
+  color: red;
+}
+
+.JumpBtns a {
+  margin-left: 3em;
+  font-size: 20px;
+  color: red;
+}
+
+.JumpBtns a:visited{
+  margin-left: 3em;
+  font-size: 20px;
+  color: purple;
+}
+
+.JumpBtns a:hover{
+  margin-left: 3em;
+  font-size: 20px;
+  color: purple;
 }

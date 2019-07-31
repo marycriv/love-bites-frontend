@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import './App.css';
 import MainContainer from './containers/MainContainer'
-import NavBar from "./components/NavBar";
 import NewUserForm from "./components/NewUserForm";
 import Header from "./components/Header";
 import BepisMode from "./components/BepisMode";
 
 const API = 'http://localhost:3001'
+
+const classificationArray = []
+
 
 class App extends Component {
 
@@ -14,7 +16,14 @@ class App extends Component {
     isLoading: true,
     userData: [],
     bepisMode: false,
-    currentUserId: null
+    currentUserId: null,
+    currentUser: null,
+    loggedIn: false,
+    vampireMode: true,
+    dhampirMode: true,
+    slayerMode: true,
+    humanMode: true,
+    classification: ''
   }
 
   getUsers() {
@@ -34,6 +43,66 @@ class App extends Component {
     this.getUsers()
   }
 
+  vampireModeToggle = () => {
+
+
+    this.setState({
+      vampireMode: !this.state.vampireMode
+    })
+
+    if (this.state.vampireMode) {
+      this.setState({
+        userData: this.state.userData.filter(user => user.classification === 'vampire')
+      })
+    } else {
+      this.getUsers()
+    }
+
+  } // end vmt
+
+  dhampirModeToggle = () => {
+    this.setState({
+      dhampirMode: !this.state.dhampirMode
+    })
+
+    if (this.state.dhampirMode) {
+      this.setState({
+        userData: this.state.userData.filter(user => user.classification === 'dhampir')
+      })
+    } else {
+      this.getUsers()
+    }
+  }
+
+  humanModeToggle = () => {
+    this.setState({
+      humanMode: !this.state.humanMode
+    })
+
+    if (this.state.humanMode) {
+      this.setState({
+        userData: this.state.userData.filter(user => user.classification === 'human')
+      })
+    } else {
+      this.getUsers()
+    }
+  }
+
+  slayerModeToggle = () => {
+    this.setState({
+      slayerMode: !this.state.slayerMode
+    })
+
+    if (this.state.slayerMode) {
+      this.setState({
+        userData: this.state.userData.filter(user => user.classification === 'slayer')
+      })
+    } else {
+      this.getUsers()
+    }
+
+  }
+
 
   bepisMode = () => {
     this.setState({
@@ -49,8 +118,12 @@ class App extends Component {
     } else {
       let id = parseInt(loginId)
 
+      let user = this.state.userData.find(function(user){ return user.id === id})
+
       this.setState({
-        currentUserId: id
+        currentUserId: id,
+        currentUser: user,
+        loggedIn: true
       })
     }
   }
@@ -75,9 +148,11 @@ class App extends Component {
     .then(resp => resp.json())
     .then((newData) => this.setState({
       userData: [...this.state.userData, newData],
-      currentUserId: newData.id
+      currentUserId: newData.id,
+      currentUser: newData,
+      loggedIn: true
     }))
-    .catch(error => console.log('error'))
+
   }
 
   deleteButtonAction = () => {
@@ -119,14 +194,32 @@ class App extends Component {
 
     const { userData } = this.state
 
-    // console.log("AHHHHH", userData)
     let currentUserId = this.state.currentUserId
+
 
     if (this.state.isLoading) {
       return <div><h1>Loading...</h1></div>
     } else if (this.state.bepisMode) {
       return (
       <BepisMode /> )
+    } else if (!this.state.loggedIn) {
+      return(
+        <div className="App">
+          <Header
+            userData={userData}
+            currentUserId={ currentUserId }
+            handleLoginSubmit={this.handleLoginSubmit}
+            deleteButtonAction={this.deleteButtonAction}
+            handleEditSubmit={this.handleEditSubmit}
+            loggedIn={this.state.loggedIn}
+            currentUser={this.state.currentUser}
+          />
+          <NewUserForm
+            userData={ userData }
+            handleSubmit={this.handleSubmit}
+          />
+        </div>
+      )
     } else {
       return (
         <div className="App">
@@ -136,16 +229,43 @@ class App extends Component {
           handleLoginSubmit={this.handleLoginSubmit}
           deleteButtonAction={this.deleteButtonAction}
           handleEditSubmit={this.handleEditSubmit}
+          loggedIn={this.state.loggedIn}
+          currentUser={this.state.currentUser}
         />
-        <NavBar />
-        <NewUserForm
-          userData={ userData }
-          handleSubmit={this.handleSubmit}
-        />
-        <MainContainer
-          userData={ userData }
-          currentUserId={ currentUserId }
-        />
+
+        <div className="TopBar">
+          <div className="InterestedIn">
+            <h3>I'm looking for... </h3>
+            <ul>
+              <li onClick={this.vampireModeToggle}>
+                vampires 🧛🏻‍
+              </li>
+              <li onClick={this.dhampirModeToggle}>
+                dhampirs 🦇
+              </li>
+              <li onClick={this.humanModeToggle}>
+                humans 💉
+              </li>
+              <li onClick={this.slayerModeToggle}>
+                slayers ⚔️
+              </li>
+            </ul>
+          </div>
+
+            <div className="JumpBtns">
+              <h3>Jump to...</h3>
+              <ul>
+                <li><a href="#pending">pending</a></li>
+                <li><a href="#bitten">bitten</a></li>
+                <li><a href="#garlic">garlic</a></li>
+                </ul>
+            </div>
+          </div>
+
+          <MainContainer
+            userData={ userData }
+            currentUserId={ currentUserId }
+          />
         </div>
       );
     }

@@ -20,8 +20,11 @@ export default class NewUserForm extends Component {
 
 render(){
   return (
-    <div className="NewUserForm" onSubmit={(e) => this.props.handleSubmit(e, this.state.display_name, this.state.profile_picture, this.state.classification)} >
-      <form>
+
+    <div className="NewUserForm" >
+    <h3> Signup form:
+    </h3>
+      <form onSubmit={(e) => this.props.handleSubmit(e, this.state.display_name, this.state.profile_picture, this.state.classification)} >
         <label>
           Name:
           <input type="text" name="display_name" onChange={this.handleChange} />

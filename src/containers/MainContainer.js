@@ -16,7 +16,7 @@ class MainContainer extends Component {
     profile_picture: null,
     classification: null,
     bitten: null,
-    updatedBite: null
+    updatedBite: null,
   }
 
     getBites = () => {
@@ -84,6 +84,7 @@ class MainContainer extends Component {
     let {  bitesData } = this.state
       return (
         <div>
+        
             < PotentialMatchesContainer
               userData={ this.props.userData }
               handleClick={ this.handleClick }
@@ -98,6 +99,7 @@ class MainContainer extends Component {
               slayerMode={this.slayerMode}
               humanMode={this.humanMode}
             />
+            <a name="pending"></a>
              < PendingContainer
               userData={ this.props.userData }
               bitesData={ bitesData }
@@ -106,12 +108,14 @@ class MainContainer extends Component {
 
               currentUserId={ this.props.currentUserId }
             />
+            <a name="bitten"></a>
             < BittenContainer
               userData={ this.props.userData }
               bitesData={ bitesData }
               currentUserId={ this.props.currentUserId }
               updatedBite={this.state.updatedBite}
             />
+            <a name="garlic"></a>
             < GarlicContainer
               userData={ this.props.userData }
               bitesData={ bitesData }
