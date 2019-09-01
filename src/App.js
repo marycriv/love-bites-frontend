@@ -5,7 +5,7 @@ import NewUserForm from "./components/NewUserForm";
 import Header from "./components/Header";
 import BepisMode from "./components/BepisMode";
 
-const API = 'http://localhost:3001'
+const API = 'https://calm-depths-38251.herokuapp.com'
 
 const classificationArray = []
 
