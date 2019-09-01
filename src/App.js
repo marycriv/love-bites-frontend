@@ -111,17 +111,17 @@ class App extends Component {
 
   }
 
-  handleLoginSubmit = (event, loginId) => {
+  handleLoginSubmit = (event, userInput) => {
     event.preventDefault();
-    if (loginId === 'bepis') {
+    if (userInput === 'bepis') {
       this.bepisMode()
     } else {
-      let id = parseInt(loginId)
+      let username = userInput
 
-      let user = this.state.userData.find(function(user){ return user.id === id})
+      let user = this.state.userData.find(function(user){ return user.display_name.includes(username)})
 
       this.setState({
-        currentUserId: id,
+        currentUserId: user.id,
         currentUser: user,
         loggedIn: true
       })

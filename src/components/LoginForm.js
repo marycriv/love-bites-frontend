@@ -6,7 +6,7 @@ class LoginForm extends Component {
 
   handleChange = (event) => {
     this.setState({
-      userInputId: event.target.value
+      userInput: event.target.value
     })
   }
 
@@ -38,10 +38,10 @@ class LoginForm extends Component {
   render(){
     return (
       <div className="LoginForm">
-        <form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state.userInputId)}>
+        <form onSubmit={(event) => this.props.handleLoginSubmit(event, this.state.userInput)}>
           <label>
-            Login with ID:
-            <input type="text" name="display_name" onChange={this.handleChange} />
+            Username:
+            <input placeholder="Bella Swan" type="text" name="display_name" onChange={this.handleChange} />
             <input type="submit" value="Submit" />
           </label>
         </form>
